@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Weather Forecast</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>🌦️ Weather Forecast</h1>
+
+        <p class="subtitle">
+            Check the current weather of any city
+        </p>
+
+        <div class="search-box">
+            <input type="text" id="city" placeholder="Enter city name">
+
+            <button onclick="getWeather()">
+                Search
+            </button>
+        </div>
+
+        <div id="weatherResult" class="weather-card">
+
+            <h2 id="cityName">Search for a city</h2>
+
+            <div class="temperature" id="temperature">
+                --
+            </div>
+<p id="condition">
+    Weather information will appear here
+</p>
+
+<div id="weatherIcon">
+    🌤️
+</div>
+
+            <div class="weather-details">
+
+                <div class="detail">
+                    <span>💧</span>
+                    <p>Humidity</p>
+                    <strong id="humidity">--</strong>
+                </div>
+
+                <div class="detail">
+                    <span>💨</span>
+                    <p>Wind Speed</p>
+                    <strong id="wind">--</strong>
+                </div>
+
+                <div class="detail">
+                    <span>🌡️</span>
+                    <p>Feels Like</p>
+                    <strong id="feelsLike">--</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="forecast-section">
+
+    <h2>5-Day Forecast</h2>
+
+    <div id="forecast" class="forecast-container">
+        <!-- Forecast information will appear here -->
+    </div>
+
+</div>
+
+<p id="message"></p>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>

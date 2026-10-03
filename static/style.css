@@ -1,0 +1,137 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 700px;
+    text-align: center;
+}
+
+h1 {
+    color: white;
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: white;
+    font-size: 18px;
+    margin-bottom: 25px;
+}
+
+.search-box {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.search-box input {
+    width: 70%;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    outline: none;
+}
+
+.search-box button {
+    padding: 15px 25px;
+    border: none;
+    border-radius: 10px;
+    background: #222;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.search-box button:hover {
+    background: #444;
+}
+
+.weather-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.weather-card h2 {
+    font-size: 30px;
+    margin-bottom: 15px;
+}
+
+.temperature {
+    font-size: 60px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#condition {
+    font-size: 20px;
+    margin-bottom: 25px;
+}
+
+.weather-details {
+    display: flex;
+    justify-content: space-around;
+    gap: 15px;
+}
+
+.detail {
+    flex: 1;
+    padding: 15px;
+    background: rgba(240, 240, 240, 0.8);
+    border-radius: 15px;
+}
+
+.detail span {
+    font-size: 30px;
+}
+
+.detail p {
+    margin: 8px 0;
+    font-size: 14px;
+}
+
+.detail strong {
+    font-size: 18px;
+}
+
+#message {
+    color: white;
+    margin-top: 15px;
+    font-size: 16px;
+}
+
+@media (max-width: 600px) {
+
+    h1 {
+        font-size: 32px;
+    }
+
+    .search-box {
+        flex-direction: column;
+    }
+
+    .search-box input {
+        width: 100%;
+    }
+
+    .weather-details {
+        flex-direction: column;
+    }
+}
