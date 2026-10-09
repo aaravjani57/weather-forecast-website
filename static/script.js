@@ -18,6 +18,7 @@ async function getWeather() {
             return;
         }
 
+        // Current weather
         document.getElementById("cityName").textContent =
             `${data.city}, ${data.country}`;
 
@@ -35,8 +36,12 @@ async function getWeather() {
 
         document.getElementById("condition").textContent =
             getWeatherCondition(data.weather_code);
-            document.getElementById("weatherIcon").textContent =
-    getWeatherIcon(data.weather_code);
+
+        document.getElementById("weatherIcon").textContent =
+            getWeatherIcon(data.weather_code);
+
+        // 7-day forecast
+        displayForecast(data.forecast);
 
         message.textContent = "";
 
@@ -44,6 +49,71 @@ async function getWeather() {
         message.textContent =
             "Could not connect to the weather service.";
     }
+}
+
+
+function displayForecast(forecast) {
+
+    const forecastContainer = document.getElementById("forecast");
+
+    forecastContainer.innerHTML = "";
+
+    forecast.forEach((day, index) => {
+
+        const forecastCard = document.createElement("div");
+
+        forecastCard.className = "forecast-card";
+
+        let dayName;
+
+        if (index === 0) {
+            dayName = "Today";
+        } else {
+            const date = new Date(day.date + "T00:00:00");
+
+            dayName = date.toLocaleDateString("en-US", {
+                weekday: "short"
+            });
+        }
+
+        forecastCard.innerHTML = `
+            <h3>${dayName}</h3>
+
+            <p class="forecast-date">
+                ${formatDate(day.date)}
+            </p>
+
+            <div class="forecast-icon">
+                ${getWeatherIcon(day.weather_code)}
+            </div>
+
+            <p class="forecast-condition">
+                ${getWeatherCondition(day.weather_code)}
+            </p>
+
+            <p class="forecast-temperature">
+                <strong>${Math.round(day.max_temperature)}°C</strong>
+                / ${Math.round(day.min_temperature)}°C
+            </p>
+
+            <p class="rain">
+                🌧️ ${day.rain_probability ?? 0}% rain
+            </p>
+        `;
+
+        forecastContainer.appendChild(forecastCard);
+    });
+}
+
+
+function formatDate(dateString) {
+
+    const date = new Date(dateString + "T00:00:00");
+
+    return date.toLocaleDateString("en-US", {
+        day: "numeric",
+        month: "short"
+    });
 }
 
 
@@ -87,6 +157,8 @@ function getWeatherCondition(code) {
 
     return "Unknown";
 }
+
+
 function getWeatherIcon(code) {
 
     if (code === 0) {
