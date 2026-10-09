@@ -11,20 +11,21 @@ def home():
 
 @app.route("/weather")
 def weather():
-    city = request.args.get("city")
+    city = request.args.get("city", "").strip()
 
     if not city:
         return jsonify({"error": "Please enter a city name."})
 
     try:
-        weather_data = get_weather(city)
+        data = get_weather(city)
 
-        if weather_data is None:
+        if data is None:
             return jsonify({"error": "City not found."})
 
-        return jsonify(weather_data)
+        return jsonify(data)
 
     except Exception as error:
+        print("Error:", error)
         return jsonify({"error": "Unable to get weather data."})
 
 
