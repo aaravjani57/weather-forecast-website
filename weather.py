@@ -1,8 +1,17 @@
+import requests
+import time
 
+weather_cache = {}
+CACHE_DURATION = 600
 import requests
 
 
 def get_weather(city):
+        cache_key = city.strip().lower()
+    cached = weather_cache.get(cache_key)
+
+    if cached and time.time() - cached["time"] < CACHE_DURATION:
+        return cached["data"]
     try:
         # Step 1: Find the city
         geocoding_url = "https://geocoding-api.open-meteo.com/v1/search"
@@ -97,4 +106,20 @@ def get_weather(city):
 
     except (requests.RequestException, ValueError, KeyError) as error:
         print("Weather error:", error)
-        return None
+                result = {
+            "city": city_name,
+            "country": country,
+            "temperature": current["temperature_2m"],
+            "humidity": current["relative_humidity_2m"],
+            "feels_like": current["apparent_temperature"],
+            "wind_speed": current["wind_speed_10m"],
+            "weather_code": current["weather_code"],
+            "forecast": forecast
+        }
+
+        weather_cache[cache_key] = {
+            "time": time.time(),
+            "data": result
+        }
+
+        return result
