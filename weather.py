@@ -14,10 +14,7 @@ def get_weather(city):
         return cached["data"]
 
     try:
-        # Find the city coordinates
-        geocoding_url = (
-            "https://geocoding-api.open-meteo.com/v1/search"
-        )
+        geocoding_url = "https://geocoding-api.open-meteo.com/v1/search"
 
         geocoding_params = {
             "name": city,
@@ -32,11 +29,11 @@ def get_weather(city):
             timeout=20
         )
         location_response.raise_for_status()
-      location_data = location_response.json()
+        location_data = location_response.json()
 
-if not location_data.get("results"):
-    print("City search response:", location_data)
-    return None
+        if not location_data.get("results"):
+            print("City search response:", location_data)
+            return None
 
         location = location_data["results"][0]
         latitude = location["latitude"]
@@ -44,7 +41,6 @@ if not location_data.get("results"):
         city_name = location["name"]
         country = location.get("country", "")
 
-        # Get current weather and 7-day forecast
         weather_url = "https://api.open-meteo.com/v1/forecast"
 
         weather_params = {
