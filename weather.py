@@ -32,10 +32,11 @@ def get_weather(city):
             timeout=20
         )
         location_response.raise_for_status()
-        location_data = location_response.json()
+      location_data = location_response.json()
 
-        if not location_data.get("results"):
-            return None
+if not location_data.get("results"):
+    print("City search response:", location_data)
+    return None
 
         location = location_data["results"][0]
         latitude = location["latitude"]
