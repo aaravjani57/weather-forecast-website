@@ -19,8 +19,10 @@ def weather():
     try:
         data = get_weather(city)
 
-        if data is None:
-            return jsonify({"error": "City not found."})
+       if data is None:
+    return jsonify({
+        "error": "Weather data unavailable. Check Render logs."
+    }), 503
 
         return jsonify(data)
 
