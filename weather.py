@@ -9,15 +9,17 @@ CACHE_DURATION = 600
 def get_weather(city):
     cache_key = city.strip().lower()
 
+    # Return cached weather if it is still fresh
     cached = weather_cache.get(cache_key)
     if cached and time.time() - cached["time"] < CACHE_DURATION:
         return cached["data"]
 
     try:
+        # Step 1: Find the city coordinates
         geocoding_url = "https://geocoding-api.open-meteo.com/v1/search"
 
         geocoding_params = {
-            "name": city,
+            "name": city.strip(),
             "count": 1,
             "language": "en",
             "format": "json"
@@ -32,7 +34,7 @@ def get_weather(city):
         location_data = location_response.json()
 
         if not location_data.get("results"):
-            print("City search response:", location_data)
+            print("City not found:", city)
             return None
 
         location = location_data["results"][0]
@@ -41,6 +43,7 @@ def get_weather(city):
         city_name = location["name"]
         country = location.get("country", "")
 
+        # Step 2: Get current weather and 7-day forecast
         weather_url = "https://api.open-meteo.com/v1/forecast"
 
         weather_params = {
@@ -73,6 +76,7 @@ def get_weather(city):
         current = weather_data["current"]
         daily = weather_data["daily"]
 
+        # Step 3: Prepare the 7-day forecast
         forecast = []
 
         for i in range(len(daily["time"])):
@@ -86,6 +90,7 @@ def get_weather(city):
                 )
             })
 
+        # Step 4: Prepare the final result
         result = {
             "city": city_name,
             "country": country,
@@ -97,6 +102,7 @@ def get_weather(city):
             "forecast": forecast
         }
 
+        # Step 5: Cache successful results for 10 minutes
         weather_cache[cache_key] = {
             "time": time.time(),
             "data": result
@@ -104,30 +110,14 @@ def get_weather(city):
 
         return result
 
-       except requests.HTTPError as error:
-        if error.response is not None and error.response.status_code == 429:
-            print("Open-Meteo rate limit reached. Please try again later.")
-            raise RuntimeError(
-                "Weather service is busy. Please try again later."
-            ) from error
-
-        print("Weather error:", error)
-        return None
-
-    except (requests.RequestException, ValueError, KeyError) as error:
-        print("Weather error:", error)
-        return None
-
     except requests.HTTPError as error:
         if error.response is not None and error.response.status_code == 429:
-            print("Open-Meteo rate limit reached. Please try again later.")
-            raise RuntimeError(
-                "Weather service is busy. Please try again later."
-            ) from error
+            print("Open-Meteo rate limit reached. Try again later.")
+            return None
 
-        print("Weather error:", error)
+        print("Weather HTTP error:", error)
         return None
 
-    except (requests.RequestException, ValueError, KeyError) as error:
+    except (requests.RequestException, ValueError, KeyError, TypeError) as error:
         print("Weather error:", error)
         return None
