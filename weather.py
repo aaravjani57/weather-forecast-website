@@ -1,20 +1,23 @@
+
 import requests
 import time
 
 weather_cache = {}
 CACHE_DURATION = 600
-import requests
 
 
 def get_weather(city):
-        cache_key = city.strip().lower()
-    cached = weather_cache.get(cache_key)
+    cache_key = city.strip().lower()
 
+    cached = weather_cache.get(cache_key)
     if cached and time.time() - cached["time"] < CACHE_DURATION:
         return cached["data"]
+
     try:
-        # Step 1: Find the city
-        geocoding_url = "https://geocoding-api.open-meteo.com/v1/search"
+        # Find the city coordinates
+        geocoding_url = (
+            "https://geocoding-api.open-meteo.com/v1/search"
+        )
 
         geocoding_params = {
             "name": city,
@@ -35,14 +38,12 @@ def get_weather(city):
             return None
 
         location = location_data["results"][0]
-
         latitude = location["latitude"]
         longitude = location["longitude"]
-
         city_name = location["name"]
         country = location.get("country", "")
 
-        # Step 2: Request current weather and 7-day forecast
+        # Get current weather and 7-day forecast
         weather_url = "https://api.open-meteo.com/v1/forecast"
 
         weather_params = {
@@ -68,17 +69,13 @@ def get_weather(city):
         weather_response.raise_for_status()
         weather_data = weather_response.json()
 
-        # Check the API response before using its data
         if "current" not in weather_data or "daily" not in weather_data:
-            print("Open-Meteo response:", weather_data)
-            raise ValueError(
-                "Weather API response is missing current or daily data."
-            )
+            print("Unexpected weather API response:", weather_data)
+            return None
 
         current = weather_data["current"]
         daily = weather_data["daily"]
 
-        # Step 3: Create the 7-day forecast
         forecast = []
 
         for i in range(len(daily["time"])):
@@ -92,21 +89,7 @@ def get_weather(city):
                 )
             })
 
-        # Step 4: Return all weather information
-        return {
-            "city": city_name,
-            "country": country,
-            "temperature": current["temperature_2m"],
-            "humidity": current["relative_humidity_2m"],
-            "feels_like": current["apparent_temperature"],
-            "wind_speed": current["wind_speed_10m"],
-            "weather_code": current["weather_code"],
-            "forecast": forecast
-        }
-
-    except (requests.RequestException, ValueError, KeyError) as error:
-        print("Weather error:", error)
-                result = {
+        result = {
             "city": city_name,
             "country": country,
             "temperature": current["temperature_2m"],
@@ -123,3 +106,7 @@ def get_weather(city):
         }
 
         return result
+
+    except (requests.RequestException, ValueError, KeyError) as error:
+        print("Weather error:", error)
+        return None
