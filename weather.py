@@ -104,6 +104,16 @@ def get_weather(city):
 
         return result
 
+       except requests.HTTPError as error:
+        if error.response is not None and error.response.status_code == 429:
+            print("Open-Meteo rate limit reached. Please try again later.")
+            raise RuntimeError(
+                "Weather service is busy. Please try again later."
+            ) from error
+
+        print("Weather error:", error)
+        return None
+
     except (requests.RequestException, ValueError, KeyError) as error:
         print("Weather error:", error)
         return None
